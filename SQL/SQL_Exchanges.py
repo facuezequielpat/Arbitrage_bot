@@ -4,6 +4,20 @@ import asyncio
 from datetime import datetime, timedelta
 from Binance.Procesar_Data_Binance import ProcesarDataBinance
 from Bybit.Procesar_Data_Bybit import ProcesarDataBybit
+from dotenv import load_dotenv
+import configparser
+import os
+
+load_dotenv("C:\\Users\\Usuario\\Desktop\\Facu\\TPs de Facu\\Bot de Arbitraje\\Keys.env")
+# Crear objeto para leer config
+config = configparser.ConfigParser()
+config.read("config.ini")
+
+# Acceder a valores
+db_host = config["database"]["host"]
+db_port = config["database"]["port"]
+db_user = config["database"]["user"]
+db_password = os.getenv("password_SQL")
 
 client = ProcesarDataBinance()
 client2 = ProcesarDataBybit()
@@ -17,11 +31,11 @@ class DatabaseManager:
         """Establece la conexión a la base de datos."""
         try:
             self.conn = psycopg2.connect(
-                host="LOCALHOST",
-                port=5432,
+                host=db_host,
+                port=db_port,
                 database="Exchanges",
-                user="postgres",
-                password="L_12345upin"
+                user=db_user,
+                password=db_password
             )
             print("Conexión a la base de datos establecida.")
         except psycopg2.OperationalError as e:
